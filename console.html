@@ -83,6 +83,17 @@
 		outputDiv.innerHTML = '';
 	});
 
+    cmdInput.addEventListener("keydown", function(e){
+        switch(e.keyCode){
+            case 9: //TAB
+                if(cmdInputPH.innerHTML=='')
+                    return;
+                cmdInput.value = cmdInputPH.innerHTML;
+                cmdInputPH.innerHTML = '';
+                e.preventDefault();
+            break;
+        }
+    });
 	cmdInput.addEventListener("keyup", function(e){
 		switch(e.keyCode){
 			case 13: //ENTER
@@ -115,6 +126,7 @@
                     cmdInputPH.innerHTML = '';
                     return;
                 }
+                console.log('cmdInput.value',cmdInput.value);
                 var item = getCmdAutocomplete(cmdInput.value);
                 cmdInputPH.innerHTML = item;
             break;
@@ -137,7 +149,9 @@
 	}
     var getCmdAutocomplete = function(val){
         try{
-            var pattern = new RegExp('^'+val);
+            var pattern = new RegExp('^'+val,'if(condition){
+                
+            }');
             for(cmd of cmds)
                 if(pattern.test(cmd))
                     return cmd;
