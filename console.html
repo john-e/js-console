@@ -111,14 +111,18 @@
 				cmdInput.value = cmdCache[cmdIdx] ? cmdCache[cmdIdx] : '';
 			break;
             default:
-                if(cmdInput.value=='')
+                if(cmdInput.value==''){
+                    cmdInputPH.innerHTML = '';
                     return;
+                }
                 var item = getCmdAutocomplete(cmdInput.value);
                 cmdInputPH.innerHTML = item;
             break;
 		}
 	});
 	var evalCmd = function(cmd){
+        if(cmd=='')
+            return '';
 		try{
 			cmdCache.push(cmd);
 			cmdIdx = cmdCache.length;
