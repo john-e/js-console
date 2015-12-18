@@ -72,10 +72,16 @@
 	var controls = []
 	var cmdCache = []; var cmdIdx = -1;
 
-    //load windows api
+    //load windows api list
     Object.getOwnPropertyNames(window).forEach(function (prop) {
         cmds.push(prop);
     });
+
+    //hook console
+    window.console.log = function(){
+        var args = Array.prototype.slice.call(arguments);
+        showOutput(args.join(' '));
+    };
 
 	controls['clear'] = document.getElementById('clearConsole');
 
@@ -126,7 +132,6 @@
                     cmdInputPH.innerHTML = '';
                     return;
                 }
-                console.log('cmdInput.value',cmdInput.value);
                 var item = getCmdAutocomplete(cmdInput.value);
                 cmdInputPH.innerHTML = item;
             break;
@@ -139,6 +144,8 @@
 			cmdCache.push(cmd);
 			cmdIdx = cmdCache.length;
 			out = eval.call(window,cmd);
+            if(/^console/.test(cmd))
+                out = '';
 		}catch(e){
 			out = {
 				error: e.getClassName(),
@@ -149,9 +156,7 @@
 	}
     var getCmdAutocomplete = function(val){
         try{
-            var pattern = new RegExp('^'+val,'if(condition){
-                
-            }');
+            var pattern = new RegExp('^'+val,'i');
             for(cmd of cmds)
                 if(pattern.test(cmd))
                     return cmd;
@@ -162,7 +167,7 @@
 		input = '<div class="input">'+input+'</div>';
 		if(typeof(output) == 'object' && output.error)
 			output = '<div class="output error"><span>'+output.error+':</span> '+output.message+'</div>';
-		else
+		else if(output!='')
 			output = '<div class="output '+(typeof(output))+'">'+output+'</div>';
 		outputDiv.innerHTML = input + output + outputDiv.innerHTML;
 	}
