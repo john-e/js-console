@@ -105,7 +105,7 @@
             break;
         }
     });
-    
+
 	cmdInput.addEventListener("keyup", function(e){
 		switch(e.keyCode){
 			case 13: //ENTER
@@ -146,6 +146,7 @@
             break;
 		}
 	});
+
 	var evalCmd = function(cmd){
         if(cmd=='')
             return '';
@@ -163,6 +164,7 @@
 		}
 		return out;
 	}
+
     var getCmdAutocomplete = function(val){
         try{
             var pattern = new RegExp('^'+val);
@@ -172,6 +174,7 @@
         }catch(e){}
         return '';
     }
+    
 	var showOutput = function(input, output){
 		input = '<div class="input">'+input+'</div>';
 		if(typeof(output) == 'object' && output.error)
