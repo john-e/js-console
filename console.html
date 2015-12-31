@@ -68,7 +68,7 @@
 	   return (results && results.length > 1) ? results[1] : "";
 	};
 
-    var cmds = [];
+    var cmds = { window: [] };
     var cmdInputPH = document.getElementById('cmd-ph');
 	var cmdInput = document.getElementById('cmd');
 	var outputDiv = document.getElementById('dump');
@@ -79,7 +79,7 @@
     var cmdsBL = ['controls','cmds','cmdInputPH','cmdInput','outputDiv','cmdCache','cmdIdx','evalCmd','getCmdAutocomplete','showOutput','cmdsBL'];
     Object.getOwnPropertyNames(window).forEach(function (prop) {
         if(cmdsBL.indexOf(prop) == -1)
-            cmds.push(prop);
+            cmds['window'].push(prop);
     });
 
     //hook console
@@ -166,11 +166,46 @@
 	}
 
     var getCmdAutocomplete = function(val){
+        var cmdLevels = val.split('.'), out = [];
+        
+        if(cmdLevels.length > 0){
+            val = cmdLevels.pop();
+            if(cmdLevels[0]=='window'){
+                cmdLevels.shift();
+                out.push('window');
+            }
+        }
+        if(cmdLevels.length > 0){
+            var base = cmdLevels.join('.');
+            if(!cmds[base]){
+                var outC = window;
+                try {
+                    for(cmd of cmdLevels){
+                        outC = outC[cmd];
+                        out.push(cmd);
+                    }
+                }catch(e){ return ''; }
+                cmds[base] = [];
+                for(cmd in outC)
+                    cmds[base].push(cmd);
+            } else{
+                out = out.concat(cmdLevels);
+                cmdLevels = cmds[base];
+            }
+        } else{
+            out = out.concat(cmdLevels);
+            cmdLevels = cmds['window']; 
+        }
+
+        if(val=='')
+            return '';
         try{
             var pattern = new RegExp('^'+val);
-            for(cmd of cmds)
-                if(pattern.test(cmd))
-                    return cmd;
+            for(cmd of cmdLevels)
+                if(pattern.test(cmd)){
+                    out.push(cmd);
+                    return out.join('.');
+                }
         }catch(e){}
         return '';
     }
