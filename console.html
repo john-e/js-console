@@ -214,7 +214,7 @@
 		input = '<div class="input">'+input+'</div>';
 		if(typeof(output) == 'object' && output.error)
 			output = '<div class="output error"><span>'+output.error+':</span> '+output.message+'</div>';
-		else if(output!='')
+		else
 			output = '<div class="output '+(typeof(output))+'">'+output+'</div>';
 		outputDiv.innerHTML = input + output + outputDiv.innerHTML;
 	}
